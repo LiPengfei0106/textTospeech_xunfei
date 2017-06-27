@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cleartv.text2speech">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:name=".MyApplication"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.HOME.TC"/>
+                <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.HOME.CTV" />
+                <category android:name="android.intent.category.HOME_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
+
+        <receiver android:name=".receiver.SpeakerReceiver">
+            <intent-filter>
+                <action android:name="com.cleartv.text2speech.ACTION_SERVER_ON"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SERVER_ERROR"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SERVER_OFF"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SERVER_REQUEST"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SERVER_RESPONSE"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SPEAKER_SUCCESS"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SPEAKER_FAILED"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SPEAKING_STARTE"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SPEAKING_END"/>
+                <action android:name="com.cleartv.text2speech.ACTION_SPEAKING_ERROR"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
