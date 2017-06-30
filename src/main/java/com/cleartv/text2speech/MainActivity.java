@@ -104,17 +104,19 @@ public class MainActivity extends Activity {
                 .append(ip_port).append("/")
                 .append(address).toString();
 
+        MyService.changeServerInfo(this,host_address,stationId);
+
         SPUtil.putAndApply(this,"ip_1",ip_1);
         SPUtil.putAndApply(this,"ip_2",ip_2);
         SPUtil.putAndApply(this,"ip_3",ip_3);
         SPUtil.putAndApply(this,"ip_4",ip_4);
         SPUtil.putAndApply(this,"ip_port",ip_port);
         SPUtil.putAndApply(this,"address",address);
-        SPUtil.putAndApply(this,"host_address",host_address);
-        SPUtil.putAndApply(this,"et_stationId",stationId);
-
-        MyService.hostaddress = host_address;
-        MyService.stationId = stationId;
+//        SPUtil.putAndApply(this,"host_address",host_address);
+//        SPUtil.putAndApply(this,"et_stationId",stationId);
+//
+//        MyService.hostaddress = host_address;
+//        MyService.stationId = stationId;
 
 
         Intent intent = new Intent();

@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import com.cleartv.text2speech.Action;
 import com.cleartv.text2speech.MainActivity;
+import com.cleartv.text2speech.MyService;
 import com.cleartv.text2speech.SpeechManager;
 import com.cleartv.text2speech.utils.Utils;
 
@@ -90,11 +91,16 @@ public class VodServer extends NanoHTTPD {
                 /*看就是这里，POST请教的body数据可以完整读出*/
                     body = session.getQueryParameterString();
                     sendMsg(Action.ACTION_SERVER_REQUEST, "HTTP POST\nREQUEST BODY:" + body);
-                    if (SpeechManager.getInstance().addMsgByJson(body)) {
-                        responseStr = SpeechManager.getInstance().getMsgListInfo();
-                    } else {
-                        status = Response.Status.BAD_REQUEST;
-                        responseStr = body;
+                    if (session.getUri().equals("/server")){
+                        MyService.changeServerInfo(context,Utils.getValueByKey(body,"serverUrl"),Utils.getValueByKey(body,"stationID"));
+                        responseStr = "设置成功";
+                    }else{
+                        if (SpeechManager.getInstance().addMsgByJson(body)) {
+                            responseStr = SpeechManager.getInstance().getMsgListInfo();
+                        } else {
+                            status = Response.Status.BAD_REQUEST;
+                            responseStr = body;
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

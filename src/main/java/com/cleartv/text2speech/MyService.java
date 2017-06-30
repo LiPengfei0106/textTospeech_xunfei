@@ -40,6 +40,7 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         hostaddress = (String) SPUtil.get(this,"host_address","");
+        stationId = (String) SPUtil.get(this,"et_stationId","");
         super.onCreate();
     }
 
@@ -78,6 +79,17 @@ public class MyService extends Service {
         }
     }
 
+    public static void changeServerInfo(Context context,String serverUrl,String id){
+        if(!TextUtils.isEmpty(serverUrl)){
+                hostaddress = serverUrl;
+            SPUtil.putAndApply(context,"host_address",hostaddress);
+        }
+        if(!TextUtils.isEmpty(id)){
+            stationId = id;
+            SPUtil.putAndApply(context,"et_stationId",stationId);
+        }
+    }
+
     public void startHeartBeat() {
         if(isHeartBeatRun)
             return;
@@ -87,6 +99,7 @@ public class MyService extends Service {
             public void run() {
                 while (isHeartBeatRun) {
                     try {
+                        Thread.sleep(1000 * 5);
                         if(!TextUtils.isEmpty(hostaddress)){
                             String json = Utils.getJsonFromBean(
                                     new HeartBeatBean(
@@ -114,8 +127,8 @@ public class MyService extends Service {
                         }else{
                             sendMsg(Action.ACTION_SERVICE_HEARTBEAT,"HostAddress is null");
                         }
-                        Thread.sleep(1000 * 5);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
+                        sendMsg(Action.ACTION_SERVICE_HEARTBEAT,"HeartBeat send failed :" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 }

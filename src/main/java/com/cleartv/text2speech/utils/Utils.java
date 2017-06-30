@@ -11,6 +11,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -98,6 +102,15 @@ public class Utils {
             }
         }
         return files;
+    }
+
+    public static String getValueByKey(String jsonStr, String key) throws JSONException {
+        JSONTokener jsonParser = new JSONTokener(jsonStr);
+        JSONObject jsonObj = (JSONObject) jsonParser.nextValue();
+        if(jsonObj.has(key)){
+            return jsonObj.getString(key);
+        }
+        return null;
     }
 
     public static <T> T getBeanFromJson(String json,Class<T> cls){
