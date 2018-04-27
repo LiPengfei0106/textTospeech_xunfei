@@ -1,5 +1,7 @@
 package com.cleartv.text2speech.utils;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioFormat;
@@ -37,7 +39,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -297,6 +298,14 @@ public class Utils {
         } catch (Exception e) {
             Log.e(TAG, "no such package:" + packageNmae);
         }
+    }
+
+    public static void openSystemSetting(Activity activity){
+        Intent intent = new Intent("/");
+        ComponentName cm = new ComponentName("com.android.settings","com.android.settings.Settings");
+        intent.setComponent(cm);
+        intent.setAction("android.intent.action.VIEW");
+        activity.startActivityForResult( intent , 0);
     }
 
     public static void makeDir(String dirPath) {

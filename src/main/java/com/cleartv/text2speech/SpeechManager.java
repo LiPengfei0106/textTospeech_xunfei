@@ -2,8 +2,9 @@ package com.cleartv.text2speech;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,7 +19,6 @@ import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SynthesizerListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -37,6 +37,12 @@ public class SpeechManager {
 
     // 语音合成对象
     private static com.iflytek.cloud.SpeechSynthesizer mTts;
+
+    // 提示音间隔时间
+    public static long intervalTime = 15000;
+    private long lastSpeechTime = 0;
+
+    private SoundPool mSoundPool;
 
     /**
      * 发音人
@@ -96,6 +102,7 @@ public class SpeechManager {
                 failedMsg.addLast(new ErrorMsgBean(speechListBean.speakingMsg,System.currentTimeMillis(),error.getErrorCode(),error.getErrorDescription()));
                 sendMsg(Action.ACTION_SPEAKING_ERROR,"error code : "+ error.getErrorCode()+error.getPlainDescription(true),speechListBean.speakingMsg.getId());
             }
+            lastSpeechTime = System.currentTimeMillis();
             startSpeak();
 
         }
@@ -120,6 +127,8 @@ public class SpeechManager {
             speechListBean = new SpeechListBean();
             speechListBean.speechList = new LinkedList<>();
         }
+        mSoundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM,5);
+        mSoundPool.load(context,R.raw.dingdong,1);
         // 初始化合成对象
         if(mTts == null || !isSpeechInit){
             mTts = com.iflytek.cloud.SpeechSynthesizer.createSynthesizer(context, new InitListener() {
@@ -195,10 +204,22 @@ public class SpeechManager {
     }
 
     private void startSpeak() {
+
         if(speechListBean.speechList.isEmpty()){
             // 转换完毕
             speechListBean.speakingMsg = null;
         }else {
+            if(intervalTime > 0 && System.currentTimeMillis() - lastSpeechTime > intervalTime){
+                // TODO
+
+                mSoundPool.play(1,1, 1, 0, 0, 1);
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
             speechListBean.speakingMsg = speechListBean.speechList.removeFirst();
             int code = mTts.startSpeaking(speechListBean.speakingMsg.getText(), synthesizerListener);
             if (code != ErrorCode.SUCCESS) {
@@ -208,6 +229,7 @@ public class SpeechManager {
                     sendMsg(Action.ACTION_SPEAKING_ERROR, "语音合成失败,错误码: " + code);
                 }
             }
+
         }
     }
 

@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -28,7 +30,7 @@ public class MainActivity extends Activity {
     private EditText et_ip_2;
     private EditText et_ip_3;
     private EditText et_ip_4;
-    private EditText et_ip_port;
+    private EditText et_ip_port,et_delay_time;
     private LinearLayout msg_content;
     private EditText et_address;
     private EditText et_stationId;
@@ -47,6 +49,7 @@ public class MainActivity extends Activity {
         String ip_port = (String) SPUtil.get(this,"ip_port","80");
         String address = (String) SPUtil.get(this,"address","hqueue/mediaBox/heartBeat");
         String stationId = (String) SPUtil.get(this,"et_stationId","");
+        SpeechManager.intervalTime = (int) SPUtil.get(this,"intervalTime",0);
 
         msg_content = (LinearLayout) findViewById(R.id.msg_content);
 
@@ -57,6 +60,7 @@ public class MainActivity extends Activity {
         et_ip_port = (EditText) findViewById(R.id.ip_port);
         et_address = (EditText) findViewById(R.id.address);
         et_stationId = (EditText) findViewById(R.id.et_station_id);
+        et_delay_time = (EditText) findViewById(R.id.et_delay_time);
 
         et_ip_1.setText(ip_1);
         et_ip_2.setText(ip_2);
@@ -76,11 +80,35 @@ public class MainActivity extends Activity {
         findViewById(R.id.setting).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.startAppByPackageName(MainActivity.this, "com.android.settings");
+//                Utils.startAppByPackageName(MainActivity.this, "com.android.settings");
+                Utils.openSystemSetting(MainActivity.this);
             }
         });
 
         ip_address = (TextView) findViewById(R.id.ip_address);
+
+        et_delay_time.setText("" + SpeechManager.intervalTime);
+        et_delay_time.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    SpeechManager.intervalTime = Integer.valueOf(s.toString());
+                    SPUtil.putAndApply(MainActivity.this,"intervalTime",(int)SpeechManager.intervalTime);
+                }catch (Exception e){
+
+                }
+            }
+        });
     }
 
     private void changeHost() {
